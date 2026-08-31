@@ -1,4 +1,5 @@
 # Context Engineering Lab
+*Created: 2026-08-31*
 
 A **production-ready MERN stack** application for teaching Context Engineering by allowing users to experiment with different context layers and observe how they affect LLM response quality.
 
