@@ -1,10 +1,21 @@
+# Dependencies
 node_modules
-dist
-.env
-*.local
-github_credentials/
 
-# Next.js
+# Build output
+dist
 web/.next/
 web/out/
 web/tsconfig.tsbuildinfo
+
+# Environment & secrets
+.env
+.env.*
+!.env.example
+*.local
+github_credentials/
+
+# Legacy app folders (replaced by web/ and not part of the new project)
+client/
+server/
+shared/
+docker-compose.yml

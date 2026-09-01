@@ -1,165 +1,139 @@
 # Context Engineering Lab
-*Created: 2026-08-31*
+*Created: 2026-08-31 · Updated for GitHub Pages (Next.js)*
 
-A **production-ready MERN stack** application for teaching Context Engineering by allowing users to experiment with different context layers and observe how they affect LLM response quality.
+An interactive web app for learning **Context Engineering** by experimenting with the six context layers and observing how they affect LLM response quality. This project is a **static site** built with Next.js and deployed to **GitHub Pages** — no backend server is required.
+
+## Live Site
+
+<https://hafizahmadhassan.github.io/context-engineering-lab1-introduction-to-six-layers-architecture/>
 
 ## Features
 
 - **Six Context Layers** — System Prompt, User Input, Conversation History, RAG Knowledge, Recent Conversation, State & Memory
-- **LLM Provider Support** — OpenAI (GPT-4o, GPT-4o-mini, GPT-4-turbo, GPT-3.5-turbo) & Gemini (Gemini 2.5 Pro, Gemini 2.5 Flash)
-- **Monaco Editor** — Professional code editor for each context layer with syntax highlighting
+- **Quick-Start Presets** — Customer Support, Code Review, Medical Triage, and Creative Writing presets that auto-fill all six layers with realistic data
 - **Prompt Builder** — Concatenates enabled layers into a single prompt with live token/word/char counts
-- **Automatic Quality Evaluation** — LLM-as-a-Judge evaluation across 8 criteria (Persona Adherence, Policy Accuracy, Empathy Tone, Context Awareness, Actionability, Personalisation, No Hallucination, Completeness)
+- **LLM Provider Selector** — OpenAI, Gemini, Anthropic, and Groq with model lists
+- **Automatic Quality Evaluation** — Lite evaluation across 8 criteria (Persona Adherence, Policy Accuracy, Empathy Tone, Context Awareness, Actionability, Personalisation, No Hallucination, Completeness)
 - **Visual Analytics** — Radar chart, bar chart, circular gauge, token usage chart, quality trend chart
-- **Experiment History** — Save, compare, favourite, and delete experiments
-- **Authentication** — JWT-based auth with register/login
+- **Experiment History** — Save, favourite, and delete experiments (stored locally in the browser)
 - **User Settings** — Default provider, favourite model, theme toggle, auto-save preferences
-- **Export** — JSON, Markdown, PDF, CSV export options
-- **Dark Mode** — Professional dark dashboard inspired by OpenAI Playground, LangSmith, and Anthropic Console
+- **Quiz** — Interactive quiz covering context engineering and prompt engineering concepts
+- **Dark/Light Mode** — Professional dark dashboard inspired by OpenAI Playground, LangSmith, and Anthropic Console
+
+> **Demo mode:** Because GitHub Pages only serves static files, LLM generation and evaluation are simulated locally in the browser. Experiments, settings, and login are stored per-browser (`localStorage`). Use any credentials to sign in.
 
 ## Tech Stack
 
 | Layer | Technology |
 |-------|-----------|
-| Frontend | React 19, TypeScript, Vite, Tailwind CSS, shadcn/ui, Monaco Editor, Plotly.js, Framer Motion, Zustand, React Query, React Router |
-| Backend | Node.js, Express.js, TypeScript, MongoDB, Mongoose |
-| Auth | JWT, bcrypt |
-| LLM | OpenAI SDK, Google Gemini SDK |
-| Validation | Zod |
-| Charts | Plotly.js, Recharts |
-| Containers | Docker, docker-compose |
+| Framework | Next.js 14 (App Router) with static export (`output: 'export'`) |
+| Language | TypeScript |
+| Styling | Tailwind CSS |
+| State | Zustand |
+| Charts | Recharts |
+| Icons | lucide-react |
+| Deployment | GitHub Pages (static, via `gh-pages` branch) |
 
 ## Project Structure
 
 ```
 ContextEngineeringLab/
-├── client/                     # React frontend
+├── web/                          # Next.js static app (deployed)
+│   ├── public/
+│   │   └── .nojekyll            # Tells GitHub Pages to keep _next/ assets
 │   ├── src/
-│   │   ├── components/         # Reusable UI components
-│   │   │   └── ui/            # shadcn/ui primitives
-│   │   ├── pages/             # Route pages
-│   │   ├── layouts/           # Layout wrappers
-│   │   ├── hooks/             # Custom React hooks
-│   │   ├── services/          # API service layer
-│   │   ├── store/             # Zustand state management
-│   │   ├── types/             # TypeScript type definitions
-│   │   ├── utils/             # Utility functions
-│   │   ├── charts/            # Plotly chart components
-│   │   └── context/           # React context providers
-│   ├── Dockerfile
+│   │   ├── app/                 # App Router pages
+│   │   │   ├── (auth)/login/    # /login
+│   │   │   ├── (auth)/register/ # /register
+│   │   │   ├── (dashboard)/     # protected routes
+│   │   │   │   ├── dashboard/   # /dashboard
+│   │   │   │   ├── history/     # /history
+│   │   │   │   ├── settings/    # /settings
+│   │   │   │   └── quiz/        # /quiz
+│   │   │   ├── layout.tsx       # Root layout
+│   │   │   ├── page.tsx         # Redirects to /login or /dashboard
+│   │   │   └── not-found.tsx    # 404 page
+│   │   ├── charts/              # Recharts components
+│   │   ├── components/          # UI components
+│   │   ├── context/             # React context (auth)
+│   │   ├── layouts/             # Layout wrappers
+│   │   ├── services/            # Mock / local services (localStorage)
+│   │   ├── store/               # Zustand state
+│   │   ├── types/               # TypeScript types
+│   │   └── utils/               # Utilities & presets
+│   ├── next.config.mjs          # Static export + basePath config
+│   ├── tailwind.config.js
+│   ├── postcss.config.js
 │   └── package.json
-├── server/                     # Express backend
-│   ├── src/
-│   │   ├── config/            # App configuration
-│   │   ├── controllers/       # Route controllers
-│   │   ├── middleware/        # Express middleware
-│   │   ├── models/            # Mongoose models
-│   │   ├── routes/            # API route definitions
-│   │   ├── services/          # Business logic
-│   │   ├── utils/             # Helper utilities
-│   │   ├── types/             # TypeScript types
-│   │   └── validators/        # Zod validation schemas
-│   ├── Dockerfile
-│   └── package.json
-├── shared/                     # Shared types
-├── docker-compose.yml
+├── .github/
+│   └── workflows/deploy.yml     # Optional CI/CD (GitHub Actions) deploy
+├── deploy-gh-pages.sh           # Manual deploy script (gh-pages branch)
 └── README.md
 ```
 
-## Quick Start
+> **Note:** The previous `client/` (Vite React) and `server/` (Express + MongoDB) folders were replaced by this single `web/` static app and are no longer part of the project. They are git-ignored and not deployed.
 
-### Prerequisites
-
-- Node.js 20+
-- MongoDB 7+ (or Docker)
-- npm
-
-### Local Development
+## Local Development
 
 ```bash
-# Clone and install dependencies
-git clone <repo-url>
-cd ContextEngineeringLab
-
-# Install server dependencies
-cd server
+cd web
 npm install
-
-# Install client dependencies
-cd ../client
-npm install
-
-# Configure environment
-cp server/.env.example server/.env
-# Edit server/.env with your API keys and JWT secret
-
-# Start MongoDB (if not running)
-mongod
-
-# Start server (in one terminal)
-cd server
-npm run dev
-
-# Start client (in another terminal)
-cd client
 npm run dev
 ```
 
-The application will be available at:
-- **Frontend:** http://localhost:5173
-- **Backend API:** http://localhost:5000/api
+Open <http://localhost:3000>.
 
-### Docker Deployment
+## Build & Preview (static export)
 
 ```bash
-docker compose up --build
+cd web
+npm run build
+# Static site is emitted to web/out/
 ```
 
-## API Endpoints
+To preview the output exactly as GitHub Pages serves it:
 
-### Authentication
+```bash
+cd web/out
+python3 -m http.server 8080
+# open http://localhost:8080
+```
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/auth/register` | Create account |
-| POST | `/api/auth/login` | Sign in |
-| GET | `/api/auth/profile` | Get profile (auth) |
+## Routes
 
-### Generation
+| Path        | Description                              |
+|-------------|------------------------------------------|
+| `/`         | Redirects to `/login` or `/dashboard`    |
+| `/login`    | Sign in (any credentials, demo mode)     |
+| `/register` | Create account (demo mode)               |
+| `/dashboard`| Context-layers lab with generation       |
+| `/history`  | Saved experiments (stored in browser)    |
+| `/settings` | Preferences (stored in browser)          |
+| `/quiz`     | Quiz on context engineering concepts     |
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/generate` | Generate LLM response with evaluation |
+## Deployment
 
-### Experiments
+The site is deployed to GitHub Pages. Two options are provided:
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/experiments` | List experiments (paginated) |
-| GET | `/api/experiments/stats` | Aggregate statistics |
-| GET | `/api/experiments/:id` | Get experiment by ID |
-| DELETE | `/api/experiments/:id` | Delete experiment |
-| PATCH | `/api/experiments/:id` | Update experiment (favourite, tags) |
+### Option A — Manual deploy (currently used, since Actions is disabled)
 
-### Settings
+GitHub Pages for this repository is configured to serve from the **`gh-pages`** branch. To deploy:
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/settings` | Get user settings |
-| PUT | `/api/settings` | Update user settings |
+```bash
+GITHUB_TOKEN=<your-token> ./deploy-gh-pages.sh
+```
 
-## Environment Variables
+This builds `web/out/` and force-pushes it to the `gh-pages` branch.
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `PORT` | Server port | `5000` |
-| `MONGODB_URI` | MongoDB connection string | `mongodb://localhost:27017/context-engineering-lab` |
-| `JWT_SECRET` | JWT signing secret | (required) |
-| `JWT_EXPIRES_IN` | Token expiry | `7d` |
-| `OPENAI_API_KEY` | OpenAI API key | (optional) |
-| `GEMINI_API_KEY` | Google Gemini API key | (optional) |
-| `NODE_ENV` | Environment mode | `development` |
-| `CLIENT_URL` | CORS origin | `http://localhost:5173` |
+### Option B — GitHub Actions (auto-deploy)
+
+A workflow at `.github/workflows/deploy.yml` builds and deploys to Pages on every push to `main`. This requires **GitHub Actions** to be enabled for your account (Settings → Actions → Enable); it is currently disabled for this account.
+
+### Configuration notes
+
+- `basePath` / `assetPrefix` in `web/next.config.mjs` are set to the repository name so assets and routes resolve correctly under the GitHub Pages sub-path.
+- The `.nojekyll` file (from `web/public/`) tells GitHub Pages not to ignore the `_next/` build folder.
+- To switch to a user/org page or custom domain, update `basePath`/`assetPrefix` in `next.config.mjs`.
 
 ## Context Layers
 
@@ -191,47 +165,12 @@ Each generation is automatically evaluated across eight quality dimensions:
 
 ### Adding a Provider
 
-1. Create `server/src/services/your-provider.service.ts` implementing the `IProvider` interface
-2. Add the provider class to `server/src/services/llm.factory.ts`
-3. Add pricing to `server/src/types/index.ts` `PRICING` config
-4. Add the provider to the client's `Sidebar.tsx` `PROVIDERS` array
+Add your provider and models to the `PROVIDERS` array in `web/src/components/Sidebar.tsx`, and extend the mock generation in `web/src/services/generation.service.ts`.
 
 ### Adding a Context Layer
 
-1. Add layer definition to `server/src/services/prompt.service.ts` `DEFAULT_LAYERS`
-2. Add corresponding layer to `client/src/utils/format.ts` `DEFAULT_LAYERS`
-
-## Architecture
-
-```
-┌─────────────┐     ┌──────────────┐     ┌─────────────┐
-│  React SPA  │────▶│  Express API │────▶│   MongoDB   │
-│  (Vite)     │     │  (TypeScript)│     │  (Mongoose) │
-└─────────────┘     └──────┬───────┘     └─────────────┘
-                           │
-                    ┌──────┴───────┐
-                    │  LLM Service │
-                    │   Factory    │
-                    └──────┬───────┘
-                           │
-              ┌────────────┼────────────┐
-              │            │            │
-        ┌─────┴─────┐ ┌───┴────┐ ┌────┴─────┐
-        │  OpenAI   │ │ Gemini │ │  Future  │
-        │  Service  │ │Service │ │Providers │
-        └───────────┘ └────────┘ └──────────┘
-```
+Add the layer definition to `DEFAULT_LAYERS` in `web/src/utils/format.ts`, and add a preset under `USE_CASE_PRESETS` in the same file.
 
 ## License
 
 MIT
-
-
-## Errors
-lsof -i :27017
-mongosh 
- mongod  
-sudo mkdir -p /data/db   
-sudo chown -R $(whoami) /data/db
-mkdir -p ~/data/db  
-mongod --dbpath ~/data/db
