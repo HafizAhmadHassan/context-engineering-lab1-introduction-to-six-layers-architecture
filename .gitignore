@@ -3,3 +3,8 @@ dist
 .env
 *.local
 github_credentials/
+
+# Next.js
+web/.next/
+web/out/
+web/tsconfig.tsbuildinfo
